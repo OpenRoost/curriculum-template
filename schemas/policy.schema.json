@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open edX OLX Course Policy",
+  "description": "Authoring schema for the policy.json file used by Open edX.",
+  "$comment": "Compatibility baseline: Open edX Verawood.1.",
+  "type": "object",
+  "minProperties": 1,
+  "maxProperties": 1,
+  "patternProperties": {
+    "^course/[^/]+$": {
+      "$ref": "#/$defs/coursePolicy"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dateTimeOrNull": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonemptyString"
+      },
+      "uniqueItems": true
+    },
+    "discussionBlackout": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "discussionTopic": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "additionalProperties": true
+    },
+    "tab": {
+      "type": "object",
+      "required": [
+        "name",
+        "type"
+      ],
+      "properties": {
+        "course_staff_only": {
+          "type": "boolean"
+        },
+        "is_hidden": {
+          "type": "boolean"
+        },
+        "name": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "type": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "url_slug": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "additionalProperties": true
+    },
+    "pdfTextbookChapter": {
+      "type": "object",
+      "required": [
+        "title",
+        "url"
+      ],
+      "properties": {
+        "title": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "url": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pdfTextbook": {
+      "type": "object",
+      "required": [
+        "chapters",
+        "id",
+        "tab_title"
+      ],
+      "properties": {
+        "chapters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pdfTextbookChapter"
+          }
+        },
+        "id": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "tab_title": {
+          "$ref": "#/$defs/nonemptyString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "userPartitionGroup": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "userPartition": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "version",
+        "groups"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "description": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/userPartitionGroup"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "coursePolicy": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/dateTimeOrNull"
+        },
+        "advertised_start": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "end": {
+          "$ref": "#/$defs/dateTimeOrNull"
+        },
+        "enrollment_start": {
+          "$ref": "#/$defs/dateTimeOrNull"
+        },
+        "enrollment_end": {
+          "$ref": "#/$defs/dateTimeOrNull"
+        },
+        "advanced_modules": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "graceperiod": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/tab"
+          }
+        },
+        "discussion_blackouts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/discussionBlackout"
+          }
+        },
+        "show_calculator": {
+          "type": "boolean"
+        },
+        "days_early_for_beta": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cohort_config": {
+          "type": "object",
+          "properties": {
+            "cohorted": {
+              "type": "boolean"
+            },
+            "cohorted_discussions": {
+              "$ref": "#/$defs/stringArray"
+            },
+            "auto_cohort_groups": {
+              "$ref": "#/$defs/stringArray"
+            }
+          },
+          "additionalProperties": true
+        },
+        "pdf_textbooks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pdfTextbook"
+          }
+        },
+        "user_partitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/userPartition"
+          }
+        },
+        "cert_html_view_enabled": {
+          "type": "boolean"
+        },
+        "certificates_display_behavior": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "course_image": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "discussion_topics": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/discussionTopic"
+          }
+        },
+        "discussions_settings": {
+          "type": "object",
+          "properties": {
+            "enable_graded_units": {
+              "type": "boolean"
+            },
+            "enable_in_context": {
+              "type": "boolean"
+            },
+            "provider_type": {
+              "$ref": "#/$defs/nonemptyString"
+            },
+            "unit_level_visibility": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
+        },
+        "display_name": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "instructor_info": {
+          "type": "object"
+        },
+        "language": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "learning_info": {
+          "type": "array"
+        },
+        "lti_passports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonemptyString"
+          }
+        },
+        "minimum_grade_credit": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
