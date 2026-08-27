@@ -72,6 +72,18 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="multipleChoiceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MultipleChoice" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="multipleChoicePartialCredit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="points" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="chapterReference">
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
@@ -113,6 +125,74 @@
     <xs:attribute name="show_reset_button" type="xs:boolean" />
 
     <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="multipleChoiceResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="partial_credit" type="multipleChoicePartialCredit" />
+    <xs:attribute name="targeted-feedback" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="choiceGroupType">
+    <xs:sequence>
+      <xs:element
+        ref="choice"
+        minOccurs="1"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="type" type="multipleChoiceType" />
+    <xs:attribute name="shuffle" type="xs:boolean" />
+    <xs:attribute name="answer-pool" type="xs:positiveInteger" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="choiceType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="correct" type="nonemptyString" use="required" />
+    <xs:attribute name="name" type="nonemptyString" />
+    <xs:attribute name="fixed" type="xs:boolean" />
+    <xs:attribute name="explanation-id" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="richContentType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="solutionType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="explanation-id" type="nonemptyString" />
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="courseType">
@@ -218,4 +298,12 @@
   <xs:element name="vertical" type="verticalType" />
   <xs:element name="html" type="htmlType" />
   <xs:element name="problem" type="problemType" />
+
+  <xs:element name="multiplechoiceresponse" type="multipleChoiceResponseType" />
+  <xs:element name="choicegroup" type="choiceGroupType" />
+  <xs:element name="choice" type="choiceType" />
+  <xs:element name="label" type="richContentType" />
+  <xs:element name="description" type="richContentType" />
+  <xs:element name="choicehint" type="richContentType" />
+  <xs:element name="solution" type="solutionType" />
 </xs:schema>
