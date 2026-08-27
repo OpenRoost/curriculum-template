@@ -102,6 +102,12 @@
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
 
+  <xs:complexType name="wikiType">
+    <xs:attribute name="slug" type="nonemptyString" use="required" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:complexType name="htmlType">
     <xs:attribute name="url_name" type="nonemptyString" />
     <xs:attribute name="filename" type="nonemptyString" />
@@ -252,6 +258,11 @@
         type="chapterReference"
         minOccurs="0"
         maxOccurs="unbounded"
+      />
+      <xs:element
+        name="wiki"
+        type="wikiType"
+        minOccurs="0"
       />
     </xs:sequence>
 
