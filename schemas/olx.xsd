@@ -75,6 +75,14 @@
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
 
+  <xs:complexType name="htmlType">
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="filename" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:complexType name="courseType">
     <xs:sequence>
       <xs:element
@@ -176,4 +184,5 @@
   <xs:element name="chapter" type="chapterType" />
   <xs:element name="sequential" type="sequentialType" />
   <xs:element name="vertical" type="verticalType" />
+  <xs:element name="html" type="htmlType" />
 </xs:schema>
