@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified"
+  version="0.1.0"
+>
+  <xs:annotation>
+    <xs:documentation>OpenRoost OLX authoring schema. This schema describes the Studio-compatible
+      Open Learning XML subset used by OpenRoost course repositories. It is intended for authoring
+      assistance and structural validation. Version 0.1 covers the standard course hierarchy, HTML,
+      video, and problem components, and the five simple problem types available in Open edX Studio:
+      single select, multi-select, text input, numerical input, and dropdown. Unknown XBlocks and
+      additional Open edX metadata remain allowed at extensibility points. This schema is
+      non-normative and does not attempt to describe every element, attribute, XBlock, or advanced
+      problem type supported by Open edX. Compatibility baseline: Open edX Verawood.1.</xs:documentation>
+  </xs:annotation>
+
+  <xs:simpleType name="nonemptyString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="gradeFraction">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="nullValue">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="null" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dateTimeOrNull">
+    <xs:union memberTypes="xs:dateTime nullValue" />
+  </xs:simpleType>
+
+  <xs:simpleType name="showCorrectness">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="always" />
+      <xs:enumeration value="never" />
+      <xs:enumeration value="past_due" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="showAnswer">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="always" />
+      <xs:enumeration value="answered" />
+      <xs:enumeration value="attempted" />
+      <xs:enumeration value="closed" />
+      <xs:enumeration value="finished" />
+      <xs:enumeration value="correct_or_past_due" />
+      <xs:enumeration value="past_due" />
+      <xs:enumeration value="never" />
+      <xs:enumeration value="after_attempts" />
+      <xs:enumeration value="after_all_attempts" />
+      <xs:enumeration value="after_all_attempts_or_correct" />
+      <xs:enumeration value="attempted_no_past_due" />
+      <xs:enumeration value="never_show_correctness_but_include_grade_description" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="problemRandomization">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="always" />
+      <xs:enumeration value="on_reset" />
+      <xs:enumeration value="never" />
+      <xs:enumeration value="per_student" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="multipleChoiceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MultipleChoice" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="multipleChoicePartialCredit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="points" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="multiSelectPartialCredit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="EDC" />
+      <xs:enumeration value="halves" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="stringResponseMatchType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ci" />
+      <xs:enumeration value="cs" />
+      <xs:enumeration value="regexp" />
+      <xs:enumeration value="ci regexp" />
+      <xs:enumeration value="regexp ci" />
+      <xs:enumeration value="cs regexp" />
+      <xs:enumeration value="regexp cs" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="numericalPartialCredit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="close" />
+      <xs:enumeration value="list" />
+      <xs:enumeration value="close,list" />
+      <xs:enumeration value="list,close" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="responseParameterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="tolerance" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="videoTime">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="chapterReference">
+    <xs:attribute name="url_name" type="nonemptyString" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="sequentialReference">
+    <xs:attribute name="url_name" type="nonemptyString" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="verticalReference">
+    <xs:attribute name="url_name" type="nonemptyString" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="wikiType">
+    <xs:attribute name="slug" type="nonemptyString" use="required" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="htmlType">
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="filename" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="videoType">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <!-- Video reference -->
+    <xs:attribute name="url_name" type="nonemptyString" />
+
+    <!-- Video settings -->
+    <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="youtube" type="xs:string" />
+    <xs:attribute name="youtube_id_1_0" type="xs:string" />
+    <xs:attribute name="download_track" type="xs:boolean" />
+    <xs:attribute name="download_video" type="xs:boolean" />
+    <xs:attribute name="html5_sources" type="xs:string" />
+    <xs:attribute name="show_captions" type="xs:boolean" />
+    <xs:attribute name="start_time" type="videoTime" />
+    <xs:attribute name="end_time" type="videoTime" />
+    <xs:attribute name="track" type="xs:string" />
+    <xs:attribute name="edx_video_id" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="sourceType">
+    <xs:attribute name="src" type="xs:string" />
+    <xs:attribute name="srcset" type="xs:string" />
+    <xs:attribute name="type" type="xs:string" />
+    <xs:attribute name="media" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="problemType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <!-- Problem reference -->
+    <xs:attribute name="url_name" type="nonemptyString" />
+
+    <!-- Problem settings -->
+    <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="max_attempts" type="xs:nonNegativeInteger" />
+    <xs:attribute name="weight" type="xs:decimal" />
+    <xs:attribute name="rerandomize" type="problemRandomization" />
+    <xs:attribute name="showanswer" type="showAnswer" />
+    <xs:attribute name="show_reset_button" type="xs:boolean" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="multipleChoiceResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="partial_credit" type="multipleChoicePartialCredit" />
+    <xs:attribute name="targeted-feedback" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="choiceResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="partial_credit" type="multiSelectPartialCredit" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="stringResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="answer" type="xs:string" use="required" />
+    <xs:attribute name="type" type="stringResponseMatchType" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="numericalResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="answer" type="xs:string" use="required" />
+    <xs:attribute name="partial_credit" type="numericalPartialCredit" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="optionResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="inline" type="xs:boolean" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="choiceGroupType">
+    <xs:sequence>
+      <xs:element
+        ref="choice"
+        minOccurs="1"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="type" type="multipleChoiceType" />
+    <xs:attribute name="shuffle" type="xs:boolean" />
+    <xs:attribute name="answer-pool" type="xs:positiveInteger" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="checkboxGroupType">
+    <xs:sequence>
+      <xs:element
+        ref="choice"
+        minOccurs="1"
+        maxOccurs="unbounded"
+      />
+      <xs:element
+        ref="compoundhint"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="direction" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="choiceType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="correct" type="nonemptyString" use="required" />
+    <xs:attribute name="name" type="nonemptyString" />
+    <xs:attribute name="fixed" type="xs:boolean" />
+    <xs:attribute name="explanation-id" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="dropdownOptionType" mixed="true">
+    <xs:sequence>
+      <xs:element
+        name="optionhint"
+        type="richContentType"
+        minOccurs="0"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="correct" type="nonemptyString" use="required" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="optionInputType">
+    <xs:sequence>
+      <xs:element
+        name="option"
+        type="dropdownOptionType"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="options" type="xs:string" />
+    <xs:attribute name="correct" type="xs:string" />
+    <xs:attribute name="inline" type="xs:boolean" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="richContentType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="choiceHintType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="selected" type="xs:boolean" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="compoundHintType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="value" type="nonemptyString" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="additionalAnswerType">
+    <xs:sequence>
+      <xs:element
+        ref="correcthint"
+        minOccurs="0"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="answer" type="xs:string" use="required" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="correctHintType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="label" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="stringEqualHintType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="answer" type="xs:string" use="required" />
+        <xs:attribute name="label" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="textLineType">
+    <xs:attribute name="size" type="xs:positiveInteger" />
+    <xs:attribute name="hidden" type="xs:boolean" />
+    <xs:attribute name="correct_answer" type="xs:string" />
+    <xs:attribute name="trailing_text" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="formulaEquationInputType">
+    <xs:attribute name="size" type="xs:positiveInteger" />
+    <xs:attribute name="trailing_text" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="responseParamType">
+    <xs:attribute name="type" type="responseParameterType" />
+    <xs:attribute name="default" type="xs:string" />
+    <xs:attribute name="partial_range" type="xs:string" />
+    <xs:attribute name="partial_answers" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="scriptType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="xs:string" />
+        <xs:attribute name="src" type="xs:string" />
+
+        <xs:anyAttribute processContents="lax" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="solutionType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="explanation-id" type="nonemptyString" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="demandHintType">
+    <xs:sequence>
+      <xs:element
+        ref="hint"
+        minOccurs="1"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="courseType">
+    <xs:sequence>
+      <xs:element
+        name="chapter"
+        type="chapterReference"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+      <xs:element
+        name="wiki"
+        type="wikiType"
+        minOccurs="0"
+      />
+    </xs:sequence>
+
+    <!-- Course identity -->
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="org" type="nonemptyString" />
+    <xs:attribute name="course" type="nonemptyString" />
+
+    <!-- Course metadata -->
+    <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="course_image" type="nonemptyString" />
+    <xs:attribute name="language" type="xs:language" />
+
+    <!-- Course schedule -->
+    <xs:attribute name="start" type="xs:dateTime" />
+    <xs:attribute name="end" type="xs:dateTime" />
+    <xs:attribute name="enrollment_start" type="xs:dateTime" />
+    <xs:attribute name="enrollment_end" type="xs:dateTime" />
+
+    <!-- Course defaults -->
+    <xs:attribute name="graceperiod" type="xs:string" />
+    <xs:attribute name="minimum_grade_credit" type="gradeFraction" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="chapterType">
+    <xs:sequence>
+      <xs:element
+        name="sequential"
+        type="sequentialReference"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="start" type="xs:dateTime" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="sequentialType">
+    <xs:sequence>
+      <xs:element
+        name="vertical"
+        type="verticalReference"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <!-- Subsection identity -->
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+
+    <!-- Subsection schedule -->
+    <xs:attribute name="start" type="dateTimeOrNull" />
+    <xs:attribute name="due" type="dateTimeOrNull" />
+    <xs:attribute name="graceperiod" type="xs:string" />
+    <xs:attribute name="hide_after_due" type="xs:boolean" />
+
+    <!-- Grading -->
+    <xs:attribute name="graded" type="xs:boolean" />
+    <xs:attribute name="format" type="nonemptyString" />
+    <xs:attribute name="show_correctness" type="showCorrectness" />
+    <xs:attribute name="showanswer" type="showAnswer" />
+
+    <!-- Timed subsections -->
+    <xs:attribute name="default_time_limit_minutes" type="xs:integer" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="verticalType">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:element name="course" type="courseType">
+    <xs:annotation>
+      <xs:documentation>Defines the course entry point or a Studio-compatible course run.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="chapter" type="chapterType">
+    <xs:annotation>
+      <xs:documentation>Defines a course section containing references to subsections.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="sequential" type="sequentialType">
+    <xs:annotation>
+      <xs:documentation>Defines a course subsection containing references to units.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="vertical" type="verticalType">
+    <xs:annotation>
+      <xs:documentation>Defines a course unit containing Open edX components and XBlocks.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="html" type="htmlType">
+    <xs:annotation>
+      <xs:documentation>References or defines a Studio-compatible HTML/text component.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="video" type="videoType">
+    <xs:annotation>
+      <xs:documentation>References or defines a Studio-compatible video component.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="source" type="sourceType" />
+
+  <xs:element name="problem" type="problemType">
+    <xs:annotation>
+      <xs:documentation>References or defines an Open edX CAPA problem component.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="multiplechoiceresponse" type="multipleChoiceResponseType">
+    <xs:annotation>
+      <xs:documentation>Defines a single-select response.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="choiceresponse" type="choiceResponseType">
+    <xs:annotation>
+      <xs:documentation>Defines a multi-select response.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="stringresponse" type="stringResponseType">
+    <xs:annotation>
+      <xs:documentation>Defines a text input response.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="numericalresponse" type="numericalResponseType">
+    <xs:annotation>
+      <xs:documentation>Defines a numerical input response.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="optionresponse" type="optionResponseType">
+    <xs:annotation>
+      <xs:documentation>Defines a dropdown response.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="optioninput" type="optionInputType" />
+  <xs:element name="choicegroup" type="choiceGroupType" />
+  <xs:element name="checkboxgroup" type="checkboxGroupType" />
+  <xs:element name="choice" type="choiceType" />
+  <xs:element name="label" type="richContentType" />
+  <xs:element name="description" type="richContentType" />
+  <xs:element name="choicehint" type="choiceHintType" />
+  <xs:element name="compoundhint" type="compoundHintType" />
+  <xs:element name="additional_answer" type="additionalAnswerType" />
+  <xs:element name="correcthint" type="correctHintType" />
+  <xs:element name="stringequalhint" type="stringEqualHintType" />
+  <xs:element name="textline" type="textLineType" />
+  <xs:element name="formulaequationinput" type="formulaEquationInputType" />
+  <xs:element name="responseparam" type="responseParamType" />
+  <xs:element name="script" type="scriptType" />
+  <xs:element name="solution" type="solutionType" />
+  <xs:element name="demandhint" type="demandHintType" />
+  <xs:element name="hint" type="richContentType" />
+</xs:schema>
