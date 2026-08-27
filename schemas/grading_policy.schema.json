@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open edX OLX Grading Policy",
+  "description": "Authoring schema for the grading_policy.json policy file used by Open edX.",
+  "$comment": "Compatibility baseline: Open edX Verawood.1.",
+  "type": "object",
+  "required": [
+    "GRADER",
+    "GRADE_CUTOFFS"
+  ],
+  "properties": {
+    "GRADER": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/grader"
+      },
+      "description": "Assignment types used to calculate the course grade."
+    },
+    "GRADE_CUTOFFS": {
+      "$ref": "#/$defs/gradeCutoffs"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gradeCutoffs": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "description": "Mapping of grade labels to minimum overall course grades."
+    },
+    "grader": {
+      "type": "object",
+      "required": [
+        "type",
+        "min_count",
+        "drop_count",
+        "weight"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/nonemptyString",
+          "description": "Assignment type name matched by graded subsections."
+        },
+        "min_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum number of assignments expected for this assignment type."
+        },
+        "drop_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of lowest-scoring assignments to drop."
+        },
+        "short_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional short label used when displaying the assignment type."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Contribution of this assignment type to the overall course grade."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
