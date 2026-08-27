@@ -103,6 +103,27 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="numericalPartialCredit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="close" />
+      <xs:enumeration value="list" />
+      <xs:enumeration value="close,list" />
+      <xs:enumeration value="list,close" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="responseParameterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="tolerance" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="scriptLanguage">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="loncapa/python" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="videoTime">
     <xs:restriction base="xs:string">
       <xs:pattern value="([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]" />
@@ -236,6 +257,21 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
+  <xs:complexType name="numericalResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="answer" type="xs:string" use="required" />
+    <xs:attribute name="partial_credit" type="numericalPartialCredit" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:complexType name="choiceGroupType">
     <xs:sequence>
       <xs:element
@@ -353,6 +389,32 @@
     <xs:attribute name="trailing_text" type="xs:string" />
 
     <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="formulaEquationInputType">
+    <xs:attribute name="size" type="xs:positiveInteger" />
+    <xs:attribute name="trailing_text" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="responseParamType">
+    <xs:attribute name="type" type="responseParameterType" />
+    <xs:attribute name="default" type="xs:string" />
+    <xs:attribute name="partial_range" type="xs:string" />
+    <xs:attribute name="partial_answers" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="scriptType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="scriptLanguage" use="required" />
+
+        <xs:anyAttribute processContents="lax" />
+      </xs:extension>
+    </xs:simpleContent>
   </xs:complexType>
 
   <xs:complexType name="solutionType" mixed="true">
@@ -487,6 +549,7 @@
   <xs:element name="multiplechoiceresponse" type="multipleChoiceResponseType" />
   <xs:element name="choiceresponse" type="choiceResponseType" />
   <xs:element name="stringresponse" type="stringResponseType" />
+  <xs:element name="numericalresponse" type="numericalResponseType" />
   <xs:element name="choicegroup" type="choiceGroupType" />
   <xs:element name="checkboxgroup" type="checkboxGroupType" />
   <xs:element name="choice" type="choiceType" />
@@ -498,6 +561,9 @@
   <xs:element name="correcthint" type="correctHintType" />
   <xs:element name="stringequalhint" type="stringEqualHintType" />
   <xs:element name="textline" type="textLineType" />
+  <xs:element name="formulaequationinput" type="formulaEquationInputType" />
+  <xs:element name="responseparam" type="responseParamType" />
+  <xs:element name="script" type="scriptType" />
   <xs:element name="solution" type="solutionType" />
   <xs:element name="demandhint" type="demandHintType" />
   <xs:element name="hint" type="richContentType" />
