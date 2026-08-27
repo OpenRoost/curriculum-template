@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open edX OLX Asset Policy",
+  "description": "Authoring schema for the assets.json policy file used by Open edX.",
+  "$comment": "Compatibility baseline: Open edX Verawood.1.",
+  "type": "object",
+  "propertyNames": {
+    "minLength": 1
+  },
+  "additionalProperties": {
+    "$ref": "#/$defs/asset"
+  },
+  "$defs": {
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "thumbnailLocation": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "const": "c4x"
+        },
+        {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        {
+          "const": "thumbnail"
+        },
+        {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "items": false,
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "assetKey": {
+      "type": "object",
+      "required": [
+        "category",
+        "course",
+        "name",
+        "org",
+        "revision",
+        "run",
+        "tag"
+      ],
+      "properties": {
+        "category": {
+          "const": "asset"
+        },
+        "course": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "name": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "org": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "run": {
+          "$ref": "#/$defs/nonemptyString"
+        },
+        "tag": {
+          "const": "c4x"
+        }
+      },
+      "additionalProperties": false
+    },
+    "asset": {
+      "type": "object",
+      "required": [
+        "contentType",
+        "content_son",
+        "displayname",
+        "filename",
+        "import_path",
+        "locked",
+        "thumbnail_location"
+      ],
+      "properties": {
+        "contentType": {
+          "$ref": "#/$defs/nonemptyString",
+          "description": "MIME type of the asset."
+        },
+        "content_son": {
+          "$ref": "#/$defs/assetKey"
+        },
+        "custom_md5": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{32}$",
+          "description": "Optional MD5 digest emitted by Open edX for stored asset content."
+        },
+        "displayname": {
+          "$ref": "#/$defs/nonemptyString",
+          "description": "Human-readable asset name."
+        },
+        "filename": {
+          "$ref": "#/$defs/nonemptyString",
+          "description": "Open edX asset identifier."
+        },
+        "import_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Original import path when preserved by Open edX; otherwise null."
+        },
+        "locked": {
+          "type": "boolean",
+          "description": "Whether access to the asset is restricted to the course."
+        },
+        "thumbnail_location": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/thumbnailLocation"
+            }
+          ],
+          "description": "Thumbnail location metadata, or null when the asset has no thumbnail."
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
