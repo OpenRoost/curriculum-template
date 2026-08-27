@@ -272,6 +272,20 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
+  <xs:complexType name="optionResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="inline" type="xs:boolean" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:complexType name="choiceGroupType">
     <xs:sequence>
       <xs:element
@@ -320,6 +334,37 @@
     <xs:attribute name="name" type="nonemptyString" />
     <xs:attribute name="fixed" type="xs:boolean" />
     <xs:attribute name="explanation-id" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="dropdownOptionType" mixed="true">
+    <xs:sequence>
+      <xs:element
+        name="optionhint"
+        type="richContentType"
+        minOccurs="0"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="correct" type="nonemptyString" use="required" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="optionInputType">
+    <xs:sequence>
+      <xs:element
+        name="option"
+        type="dropdownOptionType"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="options" type="xs:string" />
+    <xs:attribute name="correct" type="xs:string" />
+    <xs:attribute name="inline" type="xs:boolean" />
 
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
@@ -550,6 +595,8 @@
   <xs:element name="choiceresponse" type="choiceResponseType" />
   <xs:element name="stringresponse" type="stringResponseType" />
   <xs:element name="numericalresponse" type="numericalResponseType" />
+  <xs:element name="optionresponse" type="optionResponseType" />
+  <xs:element name="optioninput" type="optionInputType" />
   <xs:element name="choicegroup" type="choiceGroupType" />
   <xs:element name="checkboxgroup" type="checkboxGroupType" />
   <xs:element name="choice" type="choiceType" />
