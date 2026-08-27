@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="unqualified"
+  attributeFormDefault="unqualified"
+  version="0.1.0"
+>
+  <xs:annotation>
+    <xs:documentation>OpenRoost OLX authoring schema. This schema describes the Studio-compatible
+      Open Learning XML subset used by OpenRoost course repositories. It is intended for authoring
+      assistance and structural validation. The schema is non-normative and does not attempt to
+      describe every element, attribute, or XBlock supported by Open edX. Compatibility baseline:
+      Open edX Verawood.1.</xs:documentation>
+  </xs:annotation>
+</xs:schema>
