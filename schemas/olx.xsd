@@ -84,6 +84,13 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="multiSelectPartialCredit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="EDC" />
+      <xs:enumeration value="halves" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="videoTime">
     <xs:restriction base="xs:string">
       <xs:pattern value="([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]" />
@@ -188,6 +195,20 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
+  <xs:complexType name="choiceResponseType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="partial_credit" type="multiSelectPartialCredit" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:complexType name="choiceGroupType">
     <xs:sequence>
       <xs:element
@@ -200,6 +221,25 @@
     <xs:attribute name="type" type="multipleChoiceType" />
     <xs:attribute name="shuffle" type="xs:boolean" />
     <xs:attribute name="answer-pool" type="xs:positiveInteger" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="checkboxGroupType">
+    <xs:sequence>
+      <xs:element
+        ref="choice"
+        minOccurs="1"
+        maxOccurs="unbounded"
+      />
+      <xs:element
+        ref="compoundhint"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="direction" type="nonemptyString" />
 
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
@@ -231,6 +271,22 @@
     </xs:sequence>
 
     <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="choiceHintType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="selected" type="xs:boolean" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="compoundHintType" mixed="true">
+    <xs:complexContent>
+      <xs:extension base="richContentType">
+        <xs:attribute name="value" type="nonemptyString" use="required" />
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="solutionType" mixed="true">
@@ -363,11 +419,14 @@
   <xs:element name="problem" type="problemType" />
 
   <xs:element name="multiplechoiceresponse" type="multipleChoiceResponseType" />
+  <xs:element name="choiceresponse" type="choiceResponseType" />
   <xs:element name="choicegroup" type="choiceGroupType" />
+  <xs:element name="checkboxgroup" type="checkboxGroupType" />
   <xs:element name="choice" type="choiceType" />
   <xs:element name="label" type="richContentType" />
   <xs:element name="description" type="richContentType" />
-  <xs:element name="choicehint" type="richContentType" />
+  <xs:element name="choicehint" type="choiceHintType" />
+  <xs:element name="compoundhint" type="compoundHintType" />
   <xs:element name="solution" type="solutionType" />
   <xs:element name="demandhint" type="demandHintType" />
   <xs:element name="hint" type="richContentType" />
