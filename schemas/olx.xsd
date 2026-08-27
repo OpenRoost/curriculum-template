@@ -20,6 +20,13 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="gradeFraction">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="chapterReference">
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
@@ -34,10 +41,25 @@
       />
     </xs:sequence>
 
+    <!-- Course identity -->
     <xs:attribute name="url_name" type="nonemptyString" />
     <xs:attribute name="org" type="nonemptyString" />
     <xs:attribute name="course" type="nonemptyString" />
+
+    <!-- Course metadata -->
     <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="course_image" type="nonemptyString" />
+    <xs:attribute name="language" type="xs:language" />
+
+    <!-- Course schedule -->
+    <xs:attribute name="start" type="xs:dateTime" />
+    <xs:attribute name="end" type="xs:dateTime" />
+    <xs:attribute name="enrollment_start" type="xs:dateTime" />
+    <xs:attribute name="enrollment_end" type="xs:dateTime" />
+
+    <!-- Course defaults -->
+    <xs:attribute name="graceperiod" type="nonemptyString" />
+    <xs:attribute name="minimum_grade_credit" type="gradeFraction" />
 
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
