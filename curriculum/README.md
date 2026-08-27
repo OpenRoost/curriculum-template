@@ -86,14 +86,14 @@ For example:
 <course
   org="OpenRoost"
   course="example"
-  url_name="run"
+  url_name="example_run"
 />
 ```
 
 The `url_name` identifies the course run defined by:
 
 ```text
-course/run.xml
+course/example_run.xml
 ```
 
 Treat the values in `course.xml` as course identity rather than ordinary course content. Replace
