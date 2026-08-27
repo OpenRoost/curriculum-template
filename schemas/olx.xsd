@@ -118,12 +118,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="scriptLanguage">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="loncapa/python" />
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="videoTime">
     <xs:restriction base="xs:string">
       <xs:pattern value="([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]" />
@@ -184,8 +178,11 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
-  <xs:complexType name="videoSourceType">
-    <xs:attribute name="src" type="nonemptyString" use="required" />
+  <xs:complexType name="sourceType">
+    <xs:attribute name="src" type="xs:string" />
+    <xs:attribute name="srcset" type="xs:string" />
+    <xs:attribute name="type" type="xs:string" />
+    <xs:attribute name="media" type="xs:string" />
 
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
@@ -455,7 +452,8 @@
   <xs:complexType name="scriptType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute name="type" type="scriptLanguage" use="required" />
+        <xs:attribute name="type" type="xs:string" />
+        <xs:attribute name="src" type="xs:string" />
 
         <xs:anyAttribute processContents="lax" />
       </xs:extension>
@@ -588,7 +586,7 @@
   <xs:element name="vertical" type="verticalType" />
   <xs:element name="html" type="htmlType" />
   <xs:element name="video" type="videoType" />
-  <xs:element name="source" type="videoSourceType" />
+  <xs:element name="source" type="sourceType" />
   <xs:element name="problem" type="problemType" />
 
   <xs:element name="multiplechoiceresponse" type="multipleChoiceResponseType" />
