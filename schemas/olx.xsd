@@ -157,7 +157,23 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
+  <xs:complexType name="verticalType">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:element name="course" type="courseType" />
   <xs:element name="chapter" type="chapterType" />
   <xs:element name="sequential" type="sequentialType" />
+  <xs:element name="vertical" type="verticalType" />
 </xs:schema>
