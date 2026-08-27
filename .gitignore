@@ -1,0 +1,59 @@
+### Linux template
+*~
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+# KDE directory preferences
+.directory
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+### Windows template
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encrypted
+ehthumbs.db
+ehthumbs_vista.db
+# Dump file
+*.stackdump
+# Folder config file
+[Dd]esktop.ini
+# Recycler Bin used on file shares
+$RECYCLER.BIN/
+# Windows installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+# Windows shortcuts
+*.lnk
+
+### macOS template
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+# Thumbnails
+._*
+# Files that might appear in the root of a volume
+.DocumentRevision-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+.apdisk
+
+### Temporary files storage template
+temp/
+tmp/
+
+### IDE configs template
+.vscode/*
+.idea/*
+# Local history for Visual Studio Code
+.history/
