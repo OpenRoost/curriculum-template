@@ -27,11 +27,51 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="nullValue">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="null" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dateTimeOrNull">
+    <xs:union memberTypes="xs:dateTime nullValue" />
+  </xs:simpleType>
+
+  <xs:simpleType name="showCorrectness">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="always" />
+      <xs:enumeration value="never" />
+      <xs:enumeration value="past_due" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="showAnswer">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="always" />
+      <xs:enumeration value="answered" />
+      <xs:enumeration value="attempted" />
+      <xs:enumeration value="closed" />
+      <xs:enumeration value="finished" />
+      <xs:enumeration value="correct_or_past_due" />
+      <xs:enumeration value="past_due" />
+      <xs:enumeration value="never" />
+      <xs:enumeration value="after_attempts" />
+      <xs:enumeration value="after_all_attempts" />
+      <xs:enumeration value="after_all_attempts_or_correct" />
+      <xs:enumeration value="attempted_no_past_due" />
+      <xs:enumeration value="never_show_correctness_but_include_grade_description" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="chapterReference">
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
 
   <xs:complexType name="sequentialReference">
+    <xs:attribute name="url_name" type="nonemptyString" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="verticalReference">
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
 
@@ -85,6 +125,39 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
+  <xs:complexType name="sequentialType">
+    <xs:sequence>
+      <xs:element
+        name="vertical"
+        type="verticalReference"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <!-- Subsection identity -->
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+
+    <!-- Subsection schedule -->
+    <xs:attribute name="start" type="dateTimeOrNull" />
+    <xs:attribute name="due" type="dateTimeOrNull" />
+    <xs:attribute name="graceperiod" type="nonemptyString" />
+    <xs:attribute name="hide_after_due" type="xs:boolean" />
+
+    <!-- Grading -->
+    <xs:attribute name="graded" type="xs:boolean" />
+    <xs:attribute name="format" type="nonemptyString" />
+    <xs:attribute name="show_correctness" type="showCorrectness" />
+    <xs:attribute name="showanswer" type="showAnswer" />
+
+    <!-- Timed subsections -->
+    <xs:attribute name="default_time_limit_minutes" type="xs:integer" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:element name="course" type="courseType" />
   <xs:element name="chapter" type="chapterType" />
+  <xs:element name="sequential" type="sequentialType" />
 </xs:schema>
