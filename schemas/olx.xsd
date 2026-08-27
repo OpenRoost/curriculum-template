@@ -283,7 +283,7 @@
     <xs:attribute name="enrollment_end" type="xs:dateTime" />
 
     <!-- Course defaults -->
-    <xs:attribute name="graceperiod" type="nonemptyString" />
+    <xs:attribute name="graceperiod" type="xs:string" />
     <xs:attribute name="minimum_grade_credit" type="gradeFraction" />
 
     <xs:anyAttribute processContents="lax" />
@@ -323,7 +323,7 @@
     <!-- Subsection schedule -->
     <xs:attribute name="start" type="dateTimeOrNull" />
     <xs:attribute name="due" type="dateTimeOrNull" />
-    <xs:attribute name="graceperiod" type="nonemptyString" />
+    <xs:attribute name="graceperiod" type="xs:string" />
     <xs:attribute name="hide_after_due" type="xs:boolean" />
 
     <!-- Grading -->
