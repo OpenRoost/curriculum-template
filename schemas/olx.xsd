@@ -13,4 +13,15 @@
       describe every element, attribute, or XBlock supported by Open edX. Compatibility baseline:
       Open edX Verawood.1.</xs:documentation>
   </xs:annotation>
+  <xs:simpleType name="nonemptyString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="courseEntryPoint">
+    <xs:attribute name="url_name" type="nonemptyString" use="required" />
+    <xs:attribute name="org" type="nonemptyString" use="required" />
+    <xs:attribute name="course" type="nonemptyString" use="required" />
+  </xs:complexType>
+  <xs:element name="course" type="courseEntryPoint" />
 </xs:schema>
