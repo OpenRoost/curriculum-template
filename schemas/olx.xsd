@@ -63,6 +63,15 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="problemRandomization">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="always" />
+      <xs:enumeration value="on_reset" />
+      <xs:enumeration value="never" />
+      <xs:enumeration value="per_student" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="chapterReference">
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
@@ -79,6 +88,29 @@
     <xs:attribute name="url_name" type="nonemptyString" />
     <xs:attribute name="filename" type="nonemptyString" />
     <xs:attribute name="display_name" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="problemType" mixed="true">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <!-- Problem reference -->
+    <xs:attribute name="url_name" type="nonemptyString" />
+
+    <!-- Problem settings -->
+    <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="max_attempts" type="xs:nonNegativeInteger" />
+    <xs:attribute name="weight" type="xs:decimal" />
+    <xs:attribute name="rerandomize" type="problemRandomization" />
+    <xs:attribute name="showanswer" type="showAnswer" />
+    <xs:attribute name="show_reset_button" type="xs:boolean" />
 
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
@@ -185,4 +217,5 @@
   <xs:element name="sequential" type="sequentialType" />
   <xs:element name="vertical" type="verticalType" />
   <xs:element name="html" type="htmlType" />
+  <xs:element name="problem" type="problemType" />
 </xs:schema>
