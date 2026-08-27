@@ -84,6 +84,12 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="videoTime">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="chapterReference">
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
@@ -100,6 +106,40 @@
     <xs:attribute name="url_name" type="nonemptyString" />
     <xs:attribute name="filename" type="nonemptyString" />
     <xs:attribute name="display_name" type="nonemptyString" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="videoType">
+    <xs:sequence>
+      <xs:any
+        minOccurs="0"
+        maxOccurs="unbounded"
+        processContents="lax"
+      />
+    </xs:sequence>
+
+    <!-- Video reference -->
+    <xs:attribute name="url_name" type="nonemptyString" />
+
+    <!-- Video settings -->
+    <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="youtube" type="xs:string" />
+    <xs:attribute name="youtube_id_1_0" type="xs:string" />
+    <xs:attribute name="download_track" type="xs:boolean" />
+    <xs:attribute name="download_video" type="xs:boolean" />
+    <xs:attribute name="html5_sources" type="xs:string" />
+    <xs:attribute name="show_captions" type="xs:boolean" />
+    <xs:attribute name="start_time" type="videoTime" />
+    <xs:attribute name="end_time" type="videoTime" />
+    <xs:attribute name="track" type="xs:string" />
+    <xs:attribute name="edx_video_id" type="xs:string" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="videoSourceType">
+    <xs:attribute name="src" type="nonemptyString" use="required" />
 
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
@@ -307,6 +347,8 @@
   <xs:element name="sequential" type="sequentialType" />
   <xs:element name="vertical" type="verticalType" />
   <xs:element name="html" type="htmlType" />
+  <xs:element name="video" type="videoType" />
+  <xs:element name="source" type="videoSourceType" />
   <xs:element name="problem" type="problemType" />
 
   <xs:element name="multiplechoiceresponse" type="multipleChoiceResponseType" />
