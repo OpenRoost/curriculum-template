@@ -31,6 +31,10 @@
     <xs:attribute name="url_name" type="nonemptyString" use="required" />
   </xs:complexType>
 
+  <xs:complexType name="sequentialReference">
+    <xs:attribute name="url_name" type="nonemptyString" use="required" />
+  </xs:complexType>
+
   <xs:complexType name="courseType">
     <xs:sequence>
       <xs:element
@@ -64,5 +68,23 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
+  <xs:complexType name="chapterType">
+    <xs:sequence>
+      <xs:element
+        name="sequential"
+        type="sequentialReference"
+        minOccurs="0"
+        maxOccurs="unbounded"
+      />
+    </xs:sequence>
+
+    <xs:attribute name="url_name" type="nonemptyString" />
+    <xs:attribute name="display_name" type="nonemptyString" />
+    <xs:attribute name="start" type="xs:dateTime" />
+
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <xs:element name="course" type="courseType" />
+  <xs:element name="chapter" type="chapterType" />
 </xs:schema>
